@@ -12,8 +12,8 @@ const PORT = process.env.DB_PORT;
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(express.json({ extended: true }));
 app.use(cors());
-// app.use(express.json({ extended: false }));
 
 mongoose.Promise = global.Promise;
 
@@ -23,12 +23,16 @@ app.get("/", (req, res) => {
 
 connectDB();
 
-app.use("/api/register", require("./routes/api/register"));
+app.use("/api/member", require("./routes/api/members"));
+
 app.use("/api/todo", require("./routes/api/todos"));
+
+app.use("/api/chat", require("./routes/api/chats"));
 
 app.get("/html/nav", (req, res) => {
   res.sendFile(__dirname + "/html/nav.html");
 });
+
 app.get("/html/slider", (req, res) => {
   res.sendFile(__dirname + "/html/slider.html");
 });
