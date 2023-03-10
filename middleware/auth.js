@@ -4,12 +4,12 @@ const jwt = require("jsonwebtoken");
 // dotenv.config();
 
 module.exports = function (req, res, next) {
-  const key = process.env.SECRET_KEY;
-  const token = req.header("x-auth-token");
-
   // 인증 완료
   try {
     // 요청 헤더에 저장된 토큰과 비밀키를 사용하여 토큰을 req.decoded에 반환
+    const key = process.env.SECRET_KEY;
+    const token = req.header("x-auth-token");
+
     req.decoded = jwt.verify(token, key);
     req.user = req.decoded;
 

@@ -2,37 +2,35 @@ const Member = require("../../models/Member"); // Member model 불러오기
 const router = require("express").Router();
 const auth = require("../../middleware/auth");
 const multerUpload = require("../../middleware/multerUpload");
-
-const codeOk = { code: "OK", status: 200, message: "요청이 성공하였습니다." };
-const codeErr = { code: "ERROR", status: 500, message: "Server Error" };
+const util = require("../../functions/utils");
 
 router.post("/register", async (req, res) => {
   await Member.memberRegister(req.body)
     .then((user) => {
-      res.status(200).send(codeOk);
+      res.status(200).send(util.codeOk);
     })
     .catch(({ code, status, message }) => {
-      code ? res.status(status).send({ code, status, message }) : res.status(500).send(codeErr);
+      code ? res.status(status).send({ code, status, message }) : res.status(500).send(util.codeErr);
     });
 });
 
 router.post("/login", async (req, res) => {
   await Member.getUserByEmail(req.body)
     .then((token) => {
-      res.status(200).send({ ...codeOk, ...{ token } });
+      res.status(200).send({ ...util.codeOk, ...{ token } });
     })
     .catch(({ code, status, message }) => {
-      code ? res.status(status).send({ code, status, message }) : res.status(500).send(codeErr);
+      code ? res.status(status).send({ code, status, message }) : res.status(500).send(util.codeErr);
     });
 });
 
 router.post("/userInfo", auth, async (req, res) => {
   await Member.getUserInfoByToken(req.body)
     .then((data) => {
-      res.status(200).send({ ...codeOk, ...{ data } });
+      res.status(200).send({ ...util.codeOk, ...{ data } });
     })
     .catch(({ code, status, message }) => {
-      code ? res.status(status).send({ code, status, message }) : res.status(500).send(codeErr);
+      code ? res.status(status).send({ code, status, message }) : res.status(500).send(util.codeErr);
     });
 });
 
@@ -44,10 +42,10 @@ router.post("/editMemberProfile", auth, multerUpload.single("image"), async (req
 
   await Member.editMemberProfile(req)
     .then((data) => {
-      res.status(200).send(codeOk);
+      res.status(200).send(util.codeOk);
     })
     .catch(({ code, status, message }) => {
-      code ? res.status(status).send({ code, status, message }) : res.status(500).send(codeErr);
+      code ? res.status(status).send({ code, status, message }) : res.status(500).send(util.codeErr);
     });
 });
 
@@ -58,10 +56,10 @@ router.get("/images/profile/:image", async (req, res) => {
 router.post("/allMemberList", auth, async (req, res) => {
   await Member.getAllMemberList(req.body)
     .then((data) => {
-      res.status(200).send({ ...codeOk, ...{ data } });
+      res.status(200).send({ ...util.codeOk, ...{ data } });
     })
     .catch(({ code, status, message }) => {
-      code ? res.status(status).send({ code, status, message }) : res.status(500).send(codeErr);
+      code ? res.status(status).send({ code, status, message }) : res.status(500).send(util.codeErr);
     });
 });
 

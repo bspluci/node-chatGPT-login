@@ -5,6 +5,9 @@ const { default: mongoose } = require("mongoose");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const bodyParser = require("body-parser");
+const { db } = require("./models/Member");
+const http = require("http");
+const socketIo = require("socket.io");
 
 const app = express();
 const PORT = process.env.DB_PORT;
@@ -14,6 +17,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.json({ extended: true }));
 app.use(cors());
+
+// socket.io 통신
+const server = http.createServer(app);
+const io = require("socket.io")(server, {
+  // CORS 해결
+  cors: {
+    origin: "http://localhost:4000",
+    credentials: true,
+  },
+});
+module.exports = io;
 
 mongoose.Promise = global.Promise;
 
@@ -37,7 +51,7 @@ app.get("/html/slider", (req, res) => {
   res.sendFile(__dirname + "/html/slider.html");
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`listening on ${PORT}`);
 });
 

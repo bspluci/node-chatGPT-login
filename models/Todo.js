@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const autoIncrementModelID = require("./TodoCount");
+const errorFun = require("../functions/utils").errorFun;
 
 // Schema 생성
 const TodoSchema = new mongoose.Schema(
@@ -30,14 +31,6 @@ const TodoSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-let errorFun = (status, code, message) => {
-  let error = new Error(message);
-  code ? (error.status = status) : null;
-  message ? (error.code = code) : null;
-
-  return error;
-};
 
 TodoSchema.pre("save", function (next) {
   if (!this.isNew) {

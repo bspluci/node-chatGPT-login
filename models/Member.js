@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs"); // 암호화 모듈
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
+const errorFun = require("../functions/utils").errorFun;
 
 // Schema 생성
 const UserSchema = new mongoose.Schema(
@@ -37,19 +38,10 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-let errorFun = (status, code, message) => {
-  let error = new Error(message);
-  code ? (error.status = status) : null;
-  message ? (error.code = code) : null;
-
-  return error;
-};
-
 UserSchema.statics.memberRegister = async function (payload) {
   const { name, email, password, passwordRe, phoneNumber } = payload;
   const emailReg =
     /^([\w\.\_\-])*[a-zA-Z0-9]+([\w\.\_\-])*([a-zA-Z0-9])+([\w\.\_\-])+@([a-zA-Z0-9]+\.)+[a-zA-Z0-9]{2,8}$/;
-
   if (!name) throw errorFun(404, "empty name", "이름을 입력해주세요.");
   if (!email) throw errorFun(404, "empty email", "이메일을 입력해주세요.");
   if (!emailReg.test(email)) throw errorFun(404, "wrong email format", "잘못된 이메일 형식입니다.");
